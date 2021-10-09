@@ -10,26 +10,32 @@ class MySecondPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Display name of rapper that the user tapped
         title: Text("$name" + "'s Description"),
       ),
       body: Center(
-        child: Card(
-          elevation: 10,
-          shadowColor: Colors.blueAccent,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.blue, width: .7),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(0),
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
+        // Card for description
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Card(
+            elevation: 10,
+            shadowColor: Colors.blueAccent,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.blue, width: .7),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(20),
+                topRight: const Radius.circular(20),
+                bottomLeft: const Radius.circular(20),
+                bottomRight: const Radius.circular(20),
+              ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              "$desc",
-              style: TextStyle(fontSize: 30),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              // Display description of rapper that user tapped
+              child: Text(
+                "$desc",
+                style: const TextStyle(fontSize: 30),
+              ),
             ),
           ),
         ),
