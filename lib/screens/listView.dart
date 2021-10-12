@@ -20,8 +20,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List allArtists = [];
-  late List<dynamic> filteredArtists = [];
+  late List<Artist> allArtists = [];
+  late List<Artist> filteredArtists = [];
   List<String> listOfImgStrings = [];
   List<String> filteredListOfImgStrings = [];
   String? filePath;
@@ -39,11 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Check if we have already called api and saved the data from it
     getFileExistsSharedPref();
-    print("INIT SORT");
-    listOfImgStrings.sort();
-    filteredListOfImgStrings.sort();
-    filteredArtists.sort();
-    allArtists.sort();
   }
 
   @override
@@ -53,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Search bar is icon inside appbar
       appBar: MyAppBar(),
       body: Container(
-        // filteredArtists changes based on search
+        // filteredArtists and filteredListOfImgStrings change based on search
         child: MyListViewBuilder(
             data: filteredArtists, images: filteredListOfImgStrings),
       ),
@@ -95,15 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
       filteredArtists = allArtists;
       if (listOfImgStrings.isEmpty) {
         getImageDirList(allArtists);
-      } else {
-        print("Not empty: " + listOfImgStrings.toString());
       }
     }
   }
 
   // Function to call http GET request on images, in order to store them in cache
   getImageDirList(List<dynamic> artists) async {
-    print("getImageDirList Called");
     artists.forEach((artist) async {
       var response = await http.get(Uri.parse(artist.image));
       Directory docDir = await getApplicationDocumentsDirectory();
@@ -117,13 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     setState(() {
       filteredListOfImgStrings = listOfImgStrings;
-      filteredListOfImgStrings.sort();
+      //filteredListOfImgStrings.sort();
     });
   }
 
   // Function sets the value of fileExists in the cache
   void saveImages(List<String> images) async {
-    images.sort();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('image', images);
   }
@@ -134,10 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
     List<String>? images = prefs.getStringList('image');
     if (images != null) {
       setState(() {
+        // Sort Images
         images.sort();
         listOfImgStrings = filteredListOfImgStrings = images;
-        listOfImgStrings.sort();
-        filteredListOfImgStrings.sort();
       });
     } else {
       setState(() {
@@ -282,8 +272,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     isSearching = false;
                     // filteredArtists should contain all artists if the user taps on cancel icon
                     filteredArtists = allArtists;
-                    filteredArtists.sort();
-                    allArtists.sort();
+                    //filteredArtists.sort();
+                    //allArtists.sort();
                   });
                 },
               )

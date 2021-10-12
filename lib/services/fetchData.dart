@@ -11,7 +11,6 @@ Future<String> fetchData() async {
 
   // Response code 200 means OK, so we parse the json data
   if (response.statusCode == 200) {
-    print("API");
     return response.body;
   } else {
     // Throw exception if not OK
