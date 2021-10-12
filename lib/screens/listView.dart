@@ -39,6 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // Check if we have already called api and saved the data from it
     getFileExistsSharedPref();
+    print("INIT SORT");
+    listOfImgStrings.sort();
+    filteredListOfImgStrings.sort();
+    filteredArtists.sort();
+    allArtists.sort();
   }
 
   @override
@@ -49,7 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: MyAppBar(),
       body: Container(
         // filteredArtists changes based on search
-        child: MyListViewBuilder(filteredArtists, filteredListOfImgStrings),
+        child: MyListViewBuilder(
+            data: filteredArtists, images: filteredListOfImgStrings),
       ),
     );
   }
@@ -87,12 +93,17 @@ class _MyHomePageState extends State<MyHomePage> {
       json = allFromJson(fileContentString);
       allArtists = json.artists;
       filteredArtists = allArtists;
-      getImageDirList(allArtists);
+      if (listOfImgStrings.isEmpty) {
+        getImageDirList(allArtists);
+      } else {
+        print("Not empty: " + listOfImgStrings.toString());
+      }
     }
   }
 
   // Function to call http GET request on images, in order to store them in cache
   getImageDirList(List<dynamic> artists) async {
+    print("getImageDirList Called");
     artists.forEach((artist) async {
       var response = await http.get(Uri.parse(artist.image));
       Directory docDir = await getApplicationDocumentsDirectory();
@@ -100,11 +111,13 @@ class _MyHomePageState extends State<MyHomePage> {
       file.writeAsBytesSync(response.bodyBytes);
       if (!listOfImgStrings.contains(file.path))
         listOfImgStrings.add(file.path);
+      listOfImgStrings.sort();
       setState(() {});
       saveImages(listOfImgStrings);
     });
     setState(() {
       filteredListOfImgStrings = listOfImgStrings;
+      filteredListOfImgStrings.sort();
     });
   }
 
@@ -120,9 +133,11 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? images = prefs.getStringList('image');
     if (images != null) {
-      //images.sort();
       setState(() {
+        images.sort();
         listOfImgStrings = filteredListOfImgStrings = images;
+        listOfImgStrings.sort();
+        filteredListOfImgStrings.sort();
       });
     } else {
       setState(() {
@@ -170,6 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // put filtered images into fildered variable
       filteredListOfImgStrings = newListOfImg;
+      filteredListOfImgStrings.sort();
     });
   }
 
@@ -266,6 +282,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     isSearching = false;
                     // filteredArtists should contain all artists if the user taps on cancel icon
                     filteredArtists = allArtists;
+                    filteredArtists.sort();
+                    allArtists.sort();
                   });
                 },
               )
