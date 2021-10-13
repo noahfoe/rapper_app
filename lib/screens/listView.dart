@@ -109,33 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     setState(() {
       filteredListOfImgStrings = listOfImgStrings;
-      //filteredListOfImgStrings.sort();
     });
   }
 
-  // Function sets the value of fileExists in the cache
-  void saveImages(List<String> images) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('image', images);
-  }
-
-  // Function changes value of fileExists bool based on if user has stored cache of data
-  loadImages() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? images = prefs.getStringList('image');
-    if (images != null) {
-      setState(() {
-        // Sort Images
-        images.sort();
-        listOfImgStrings = filteredListOfImgStrings = images;
-      });
-    } else {
-      setState(() {
-        filteredListOfImgStrings = listOfImgStrings = [];
-      });
-    }
-  }
-
+  // TODO: Add Unit Test for Filter
   // Function that allows users to search for a specific rapper
   void filterByName(String val) {
     setState(() {
@@ -179,7 +156,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // Function sets the value of fileExists in the cache
   void setFileExistsSharedPref(bool fileExists) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('fileExists', fileExists);
@@ -204,6 +180,29 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       // Call setupFile() function after we have fileExists variable
       setupFile();
+    }
+  }
+
+  // Function sets the value of fileExists in the cache
+  void saveImages(List<String> images) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('image', images);
+  }
+
+  // Function changes value of fileExists bool based on if user has stored cache of data
+  loadImages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? images = prefs.getStringList('image');
+    if (images != null) {
+      setState(() {
+        // Sort Images
+        images.sort();
+        listOfImgStrings = filteredListOfImgStrings = images;
+      });
+    } else {
+      setState(() {
+        filteredListOfImgStrings = listOfImgStrings = [];
+      });
     }
   }
 
@@ -272,8 +271,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     isSearching = false;
                     // filteredArtists should contain all artists if the user taps on cancel icon
                     filteredArtists = allArtists;
-                    //filteredArtists.sort();
-                    //allArtists.sort();
                   });
                 },
               )

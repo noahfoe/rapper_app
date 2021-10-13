@@ -21,9 +21,9 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
   void initState() {
     super.initState();
     // Sort Images
-    widget.images!.sort();
+    sortImages();
     // Sort Rappers Info
-    widget.data!.sort((a, b) => a.name.compareTo(b.name));
+    sortData();
   }
 
   @override
@@ -31,12 +31,20 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.images != widget.images) {
       // Sort Images
-      widget.images!.sort();
+      sortImages();
     }
     if (oldWidget.data != widget.data) {
       // Sort Rappers Info
-      widget.data!.sort((a, b) => a.name.compareTo(b.name));
+      sortData();
     }
+  }
+
+  sortImages() {
+    widget.images!.sort();
+  }
+
+  sortData() {
+    widget.data!.sort((a, b) => a.name.compareTo(b.name));
   }
 
   @override
