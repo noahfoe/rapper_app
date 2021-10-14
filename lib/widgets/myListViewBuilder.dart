@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:rapper_app/screens/screens.dart';
 import 'package:rapper_app/services/rapper.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyListViewBuilder extends StatefulWidget {
   final List<Artist>? data;
@@ -74,7 +75,7 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               // Card for each artist
               child: Card(
-                elevation: 10,
+                elevation: 15,
                 shadowColor: Colors.blueAccent,
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(color: Colors.blue, width: .7),
@@ -96,7 +97,9 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
                       // Display name of each rapper
                       Text(
                         widget.data![index].name,
-                        style: TextStyle(fontSize: 18),
+                        style: GoogleFonts.lato(
+                            textStyle:
+                                TextStyle(fontSize: 20, letterSpacing: .5)),
                       ),
                       const Spacer(flex: 1),
                       // Display image of each rapper

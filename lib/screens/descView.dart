@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MySecondPage extends StatelessWidget {
   final String desc;
@@ -33,8 +34,9 @@ class MySecondPage extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               // Display description of rapper that user tapped
               child: Text(
-                "$desc",
-                style: const TextStyle(fontSize: 30),
+                desc,
+                style: GoogleFonts.lato(
+                    textStyle: TextStyle(fontSize: 30, letterSpacing: .5)),
               ),
             ),
           ),
