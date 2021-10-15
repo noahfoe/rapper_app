@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rapper_app/blocs/rapperBloc.dart';
+import 'package:rapper_app/models/rapperModel.dart';
 
 class MySecondPage extends StatelessWidget {
   final String desc;
@@ -9,39 +12,65 @@ class MySecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Display name of rapper that the user tapped
-        title: Text("$name" + "'s Description"),
-      ),
-      body: Center(
-        // Card for description
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Card(
-            elevation: 10,
-            shadowColor: Colors.blueAccent,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Colors.blue, width: .7),
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20),
-                bottomLeft: const Radius.circular(20),
-                bottomRight: const Radius.circular(20),
-              ),
-            ),
+    final _rapperBloc = BlocProvider.of<RapperBloc>(context);
+    bool tapped = false;
+    return BlocConsumer<RapperBloc, RapperState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      buildWhen: (previousState, state) {
+        return state is RapperIsSelected;
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            // Display name of rapper that the user tapped
+            title: Text("" + "'s Description"),
+            leading: GestureDetector(
+                child: Icon(Icons.arrow_back),
+                onTap: () {
+                  tapped = true;
+                  // _rapperBloc.add(ResetRappers([
+                  //   Artist(
+                  //       id: "1",
+                  //       name: "Drake",
+                  //       description: "drake desc",
+                  //       image: " ")
+                  // ], [
+                  //   " "
+                  // ]));
+                }),
+          ),
+          body: Center(
+            // Card for description
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              // Display description of rapper that user tapped
-              child: Text(
-                desc,
-                style: GoogleFonts.lato(
-                    textStyle: TextStyle(fontSize: 30, letterSpacing: .5)),
+              padding: const EdgeInsets.all(10.0),
+              child: Card(
+                elevation: 10,
+                shadowColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: Colors.blue, width: .7),
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(20),
+                    topRight: const Radius.circular(20),
+                    bottomLeft: const Radius.circular(20),
+                    bottomRight: const Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  // Display description of rapper that user tapped
+                  child: Text(
+                    desc,
+                    style: GoogleFonts.lato(
+                        textStyle: TextStyle(fontSize: 30, letterSpacing: .5)),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

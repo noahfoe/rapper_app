@@ -3,9 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rapper_app/blocs/rapperBloc.dart';
+import 'package:rapper_app/models/rapperModel.dart';
+import 'package:rapper_app/screens/descView.dart';
 import 'package:rapper_app/services/services.dart';
-import 'package:rapper_app/services/rapper.dart';
 import 'package:rapper_app/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> listOfImgStrings = [];
   List<String> filteredListOfImgStrings = [];
   String? filePath;
-  late Json json;
+  late RapperModel json;
   bool isSearching = false;
   File? jsonFile;
   Directory? dir;
@@ -43,16 +46,51 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    setFileExistsSharedPref(fileExists);
-    return Scaffold(
-      // Search bar is icon inside appbar
-      appBar: MyAppBar(),
-      body: Container(
-        // filteredArtists and filteredListOfImgStrings change based on search
-        child: MyListViewBuilder(
-            data: filteredArtists, images: filteredListOfImgStrings),
-      ),
-    );
+    final _rapperBloc = BlocProvider.of<RapperBloc>(context);
+    _rapperBloc.add(FetchRappers());
+
+    return BlocConsumer<RapperBloc, RapperState>(builder: (context, state) {
+      return BlocBuilder<RapperBloc, RapperState>(builder: (context, state) {
+        if (state is RapperIsLoaded) {
+          return Scaffold(
+            // Search bar is icon inside appbar
+            appBar: MyAppBar(),
+            body: Container(
+              // filteredArtists and filteredListOfImgStrings change based on search
+              child: MyListViewBuilder(
+                  data: state.getRappers, images: state.getImages),
+            ),
+          );
+        } else if (state is RapperIsLoading) {
+          return Center(child: CircularProgressIndicator());
+        }
+        //print("pushing next page with bloc");
+        else if (state is RapperIsSelected) {
+          return Center(child: CircularProgressIndicator());
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => MySecondPage(
+          //         // Pass parameters the description page needs
+          //         desc: widget.data![index].description,
+          //         name: widget.data![index].name),
+        } else {
+          return Text("error");
+        }
+      });
+    }, buildWhen: (previousState, state) {
+      return state is! RapperIsLoaded;
+    }, listener: (context, state) {
+      if (state is RapperIsSelected) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => MySecondPage(
+                      desc: state.getRapperDesc, name: state.getRapperName)));
+        });
+      }
+    });
   }
 
   // Function to setup the directory and file for cached json file

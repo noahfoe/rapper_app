@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:rapper_app/models/rapperModel.dart';
 import 'package:rapper_app/repos/rapperRepo.dart';
 
@@ -10,7 +16,14 @@ class RapperEvent extends Equatable {
 
 class FetchRappers extends RapperEvent {}
 
-class ResetRappers extends RapperEvent {}
+class ResetRappers extends RapperEvent {
+  final _rappers;
+  final _images;
+  ResetRappers(this._rappers, this._images);
+
+  List<Artist> get getRappers => _rappers;
+  List<String> get getImages => _images;
+}
 
 class SelectRapper extends RapperEvent {
   final _rapperName;
@@ -35,9 +48,11 @@ class RapperIsLoading extends RapperState {}
 // Display ListView page data - 2nd state (when ListView is shown)
 class RapperIsLoaded extends RapperState {
   final _rappers;
-  RapperIsLoaded(this._rappers);
+  final _images;
+  RapperIsLoaded(this._rappers, this._images);
 
-  RapperModel get getRappers => _rappers;
+  List<Artist>? get getRappers => _rappers;
+  List<String>? get getImages => _images;
 
   @override
   List<Artist> get props => [_rappers];
@@ -45,12 +60,16 @@ class RapperIsLoaded extends RapperState {
 
 // Display DescView page - 3rd state (when user clicks on a rapper)
 class RapperIsSelected extends RapperState {
-  final _rapper;
-  RapperIsSelected(this._rapper);
+  final _rapperName;
+  final _rapperDesc;
+  RapperIsSelected(this._rapperName, this._rapperDesc);
+
+  String get getRapperName => _rapperName;
+  String get getRapperDesc => _rapperDesc;
 
   @override
   // Error: type 'List<String>' is not a subtype of 'Artist'
-  List<Artist> get props => [_rapper];
+  List<Artist> get props => [_rapperName, _rapperDesc];
 }
 
 class RapperBloc extends Bloc<RapperEvent, RapperState> {
@@ -62,16 +81,32 @@ class RapperBloc extends Bloc<RapperEvent, RapperState> {
 
   @override
   Stream<RapperState> mapEventToState(RapperEvent event) async* {
+    List<String>? listOfImgStrings = [];
     if (event is FetchRappers) {
       yield RapperIsLoading();
       try {
-        RapperModel rappers = await _rapperRepo.fetchData();
-        yield RapperIsLoaded(rappers);
+        RapperModel _jsonData = await _rapperRepo.fetchData();
+        final _rappers = _jsonData.artists;
+        _rappers.forEach((artist) async {
+          var response = await http.get(Uri.parse(artist.image));
+          Directory docDir = await getApplicationDocumentsDirectory();
+          File file = new File(join(docDir.path, '${artist.name}.jpeg'));
+          file.writeAsBytesSync(response.bodyBytes);
+          if (!listOfImgStrings.contains(file.path))
+            listOfImgStrings.add(file.path);
+        });
+        // TODO: Not sure how to avoid this
+        await Future.delayed(Duration(seconds: 2));
+        listOfImgStrings.sort();
+        print(listOfImgStrings);
+        yield RapperIsLoaded(_rappers, listOfImgStrings);
       } catch (e) {
         yield RapperIsNotLoaded();
       }
     } else if (event is SelectRapper) {
-      yield RapperIsSelected(event.props);
+      yield RapperIsSelected(event._rapperName, event._rapperDesc);
+    } else if (event is ResetRappers) {
+      yield RapperIsLoaded(event.getRappers, event.getImages);
     }
     // else if (event is ResetRappers) {
     //   yield rapperIsLoaded(rappers);

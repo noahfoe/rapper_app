@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rapper_app/repos/rapperRepo.dart';
 import 'package:rapper_app/screens/screens.dart';
+
+import 'blocs/rapperBloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +19,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Rapper App'),
+      home: BlocProvider(
+        create: (context) => RapperBloc(RapperRepo()),
+        child: MyHomePage(title: 'Rapper App'),
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rapper_app/models/rapperModel.dart';
 import 'package:rapper_app/services/fetchData.dart';
 import 'package:rapper_app/services/services.dart';
 
@@ -17,7 +18,7 @@ main() {
 
       // Act
       await fetchData().then((data) {
-        Json json = allFromJson(data);
+        RapperModel json = allFromJson(data);
         allArtists = json.artists;
       });
       // Assert
