@@ -14,7 +14,7 @@ main() {
         "Future",
         "J. Cole"
       ];
-      List<Artist> allArtists = [];
+      List<Rapper> allArtists = [];
 
       // Act
       await fetchData().then((data) {

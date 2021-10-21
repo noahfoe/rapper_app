@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rapper_app/blocs/rapperBloc.dart';
-import 'package:rapper_app/models/rapperModel.dart';
 
 class MySecondPage extends StatelessWidget {
   final String desc;
@@ -12,34 +11,12 @@ class MySecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _rapperBloc = BlocProvider.of<RapperBloc>(context);
-    bool tapped = false;
-    return BlocConsumer<RapperBloc, RapperState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
-      buildWhen: (previousState, state) {
-        return state is RapperIsSelected;
-      },
+    return BlocBuilder<RapperBloc, RapperState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             // Display name of rapper that the user tapped
-            title: Text("" + "'s Description"),
-            leading: GestureDetector(
-                child: Icon(Icons.arrow_back),
-                onTap: () {
-                  tapped = true;
-                  // _rapperBloc.add(ResetRappers([
-                  //   Artist(
-                  //       id: "1",
-                  //       name: "Drake",
-                  //       description: "drake desc",
-                  //       image: " ")
-                  // ], [
-                  //   " "
-                  // ]));
-                }),
+            title: Text(name + "'s Description"),
           ),
           body: Center(
             // Card for description

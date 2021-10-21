@@ -6,28 +6,28 @@ import 'package:rapper_app/widgets/myListViewBuilder.dart';
 main() {
   group("myListViewBuilder Widget", () {
     testWidgets("Drake should be at top of list", (WidgetTester tester) async {
-      List<Artist> data = [
-        Artist(
+      List<Rapper> data = [
+        Rapper(
             id: "1",
             name: "Kanye West",
             description: "Kanye Description",
             image: "Kanye Image"),
-        Artist(
+        Rapper(
             id: "2",
             name: "Drake",
             description: "Drake Description",
             image: "Drake Image"),
-        Artist(
+        Rapper(
             id: "3",
             name: "Kendrick Lamar",
             description: "Kendrick Description",
             image: "Kendrick Image"),
-        Artist(
+        Rapper(
             id: "4",
             name: "Future",
             description: "Future Description",
             image: "Future Image"),
-        Artist(
+        Rapper(
             id: "5",
             name: "J. Cole",
             description: "J. Cole Description",
@@ -61,68 +61,68 @@ main() {
 
     testWidgets("Should scroll to F's through J's",
         (WidgetTester tester) async {
-      List<Artist> data = [
-        Artist(
+      List<Rapper> data = [
+        Rapper(
             id: "1",
             name: "Kanye West",
             description: "Kanye Description",
             image: "Kanye Image"),
-        Artist(
+        Rapper(
             id: "2",
             name: "Drake",
             description: "Drake Description",
             image: "Drake Image"),
-        Artist(
+        Rapper(
             id: "3",
             name: "Kendrick Lamar",
             description: "Kendrick Description",
             image: "Kendrick Image"),
-        Artist(
+        Rapper(
             id: "4",
             name: "Future",
             description: "Future Description",
             image: "Future Image"),
-        Artist(
+        Rapper(
             id: "5",
             name: "J. Cole",
             description: "J. Cole Description",
             image: "J. Cole Image"),
-        Artist(
+        Rapper(
             id: "6",
             name: "Kanye West",
             description: "Kanye Description",
             image: "Kanye Image"),
-        Artist(
+        Rapper(
             id: "7",
             name: "Kendrick Lamar",
             description: "Kendrick Description",
             image: "Kendrick Image"),
-        Artist(
+        Rapper(
             id: "8",
             name: "Future",
             description: "Future Description",
             image: "Future Image"),
-        Artist(
+        Rapper(
             id: "9",
             name: "J. Cole",
             description: "J. Cole Description",
             image: "J. Cole Image"),
-        Artist(
+        Rapper(
             id: "10",
             name: "Kanye West",
             description: "Kanye Description",
             image: "Kanye Image"),
-        Artist(
+        Rapper(
             id: "11",
             name: "Kendrick Lamar",
             description: "Kendrick Description",
             image: "Kendrick Image"),
-        Artist(
+        Rapper(
             id: "12",
             name: "Future",
             description: "Future Description",
             image: "Future Image"),
-        Artist(
+        Rapper(
             id: "13",
             name: "J. Cole",
             description: "J. Cole Description",

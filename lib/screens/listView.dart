@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rapper_app/blocs/rapperBloc.dart';
 import 'package:rapper_app/models/rapperModel.dart';
-import 'package:rapper_app/screens/descView.dart';
 import 'package:rapper_app/services/services.dart';
 import 'package:rapper_app/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,8 +22,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<Artist> allArtists = [];
-  late List<Artist> filteredArtists = [];
+  late List<Rapper> allArtists = [];
+  late List<Rapper> filteredArtists = [];
   List<String> listOfImgStrings = [];
   List<String> filteredListOfImgStrings = [];
   String? filePath;
@@ -47,50 +46,34 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final _rapperBloc = BlocProvider.of<RapperBloc>(context);
-    _rapperBloc.add(FetchRappers());
-
-    return BlocConsumer<RapperBloc, RapperState>(builder: (context, state) {
-      return BlocBuilder<RapperBloc, RapperState>(builder: (context, state) {
+    // Only call api if filteredArtists or filteredListOfImgStrings are empty
+    if (filteredArtists.isEmpty || filteredListOfImgStrings.isEmpty)
+      _rapperBloc.add(FetchRappers());
+    return BlocBuilder<RapperBloc, RapperState>(
+      bloc: _rapperBloc,
+      builder: (context, state) {
         if (state is RapperIsLoaded) {
           return Scaffold(
             // Search bar is icon inside appbar
             appBar: MyAppBar(),
             body: Container(
               // filteredArtists and filteredListOfImgStrings change based on search
-              child: MyListViewBuilder(
-                  data: state.getRappers, images: state.getImages),
+              child: filteredArtists.isEmpty
+                  ? MyListViewBuilder(
+                      data: state.getRappers, images: state.getImages)
+                  : MyListViewBuilder(
+                      data: filteredArtists, images: filteredListOfImgStrings),
             ),
           );
         } else if (state is RapperIsLoading) {
-          return Center(child: CircularProgressIndicator());
-        }
-        //print("pushing next page with bloc");
-        else if (state is RapperIsSelected) {
-          return Center(child: CircularProgressIndicator());
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => MySecondPage(
-          //         // Pass parameters the description page needs
-          //         desc: widget.data![index].description,
-          //         name: widget.data![index].name),
+          return Scaffold(
+              appBar: MyAppBar(),
+              body: Center(child: CircularProgressIndicator()));
         } else {
-          return Text("error");
+          return Text("Fetching API");
         }
-      });
-    }, buildWhen: (previousState, state) {
-      return state is! RapperIsLoaded;
-    }, listener: (context, state) {
-      if (state is RapperIsSelected) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => MySecondPage(
-                      desc: state.getRapperDesc, name: state.getRapperName)));
-        });
-      }
-    });
+      },
+    );
   }
 
   // Function to setup the directory and file for cached json file
@@ -150,7 +133,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // TODO: Add Unit Test for Filter
   // Function that allows users to search for a specific rapper
   void filterByName(String val) {
     setState(() {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rapper_app/cubits/navCubit.dart';
 import 'package:rapper_app/repos/rapperRepo.dart';
-import 'package:rapper_app/screens/screens.dart';
+import 'package:rapper_app/widgets/appNav.dart';
 
 import 'blocs/rapperBloc.dart';
 
@@ -19,9 +20,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider(
-        create: (context) => RapperBloc(RapperRepo()),
-        child: MyHomePage(title: 'Rapper App'),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => NavCubit()),
+          BlocProvider(
+            create: (context) => RapperBloc(RapperRepo()),
+          ),
+        ],
+        child: AppNavigator(),
       ),
     );
   }

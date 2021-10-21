@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:rapper_app/models/rapperModel.dart';
 
 class RapperRepo {
-// fetchData function to gather data of the rappers from the URL
+  // fetchData function to gather data of the rappers from the URL
   Future<RapperModel> fetchData() async {
     // HTTP GET call on the api with json data
     final response = await http.get(

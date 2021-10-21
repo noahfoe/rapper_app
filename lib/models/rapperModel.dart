@@ -9,18 +9,18 @@ class RapperModel {
     required this.artists,
   });
 
-  List<Artist> artists;
+  List<Rapper> artists;
 
   factory RapperModel.fromJson(Map<String, dynamic> json) => RapperModel(
-        artists: List<Artist>.from(
-          json["artists"].map((x) => Artist.fromJson(x)),
+        artists: List<Rapper>.from(
+          json["artists"].map((x) => Rapper.fromJson(x)),
         ),
       );
 }
 
 // As mentioned above, the attributes are id, name, description, and image; there is one of each for each rapper
-class Artist {
-  Artist({
+class Rapper {
+  Rapper({
     required this.id,
     required this.name,
     required this.description,
@@ -32,7 +32,7 @@ class Artist {
   String description;
   String image;
 
-  factory Artist.fromJson(Map<String, dynamic> json) => Artist(
+  factory Rapper.fromJson(Map<String, dynamic> json) => Rapper(
         id: json["id"],
         name: json["name"],
         description: json["description"],

@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rapper_app/blocs/rapperBloc.dart';
+import 'package:rapper_app/cubits/navCubit.dart';
 import 'package:rapper_app/models/rapperModel.dart';
-import 'package:rapper_app/screens/screens.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyListViewBuilder extends StatefulWidget {
-  final List<Artist>? data;
+  final List<Rapper>? data;
   final List<String>? images;
   MyListViewBuilder({Key? key, this.data, this.images}) : super(key: key);
 
@@ -52,22 +52,10 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final _rapperBloc = BlocProvider.of<RapperBloc>(context);
     // Make sure we have same length of images and names/descriptions
     if (widget.images!.length == widget.data!.length) {
       // Create a listView of the Rappers
-      return BlocConsumer<RapperBloc, RapperState>(
-        listener: (context, state) {
-          if (state is RapperIsSelected) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MySecondPage(
-                        // Pass parameters the description page needs
-                        desc: state.getRapperDesc,
-                        name: state.getRapperName)));
-          }
-        },
+      return BlocBuilder<RapperBloc, RapperState>(
         builder: (context, state) {
           return ListView.builder(
             // Count changes based on search bar results
@@ -76,22 +64,8 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
               // GestureDetector to check if user taps on the card
               return GestureDetector(
                 onTap: () {
-                  // If user taps on an artist, send them to description page
-                  _rapperBloc.add(SelectRapper(widget.data![index].name,
-                      widget.data![index].description));
-                  /*
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MySecondPage(
-                            // Pass parameters the description page needs
-                            desc: widget.data![index].description,
-                            name: widget.data![index].name),
-                      
-                      ),
-                      
-                    );
-                    */
+                  BlocProvider.of<NavCubit>(context)
+                      .showRapperDetails(widget.data![index]);
                 },
                 child: Padding(
                   padding:
@@ -127,7 +101,9 @@ class _MyListViewBuilderState extends State<MyListViewBuilder> {
                           const Spacer(flex: 1),
                           // Display image of each rapper
                           Image.file(
-                            File(widget.images![index].toString()),
+                            File(
+                              widget.images![index].toString(),
+                            ),
                             width: 200,
                             height: 200,
                           ),

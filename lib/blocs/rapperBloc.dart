@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -16,15 +15,6 @@ class RapperEvent extends Equatable {
 
 class FetchRappers extends RapperEvent {}
 
-class ResetRappers extends RapperEvent {
-  final _rappers;
-  final _images;
-  ResetRappers(this._rappers, this._images);
-
-  List<Artist> get getRappers => _rappers;
-  List<String> get getImages => _images;
-}
-
 class SelectRapper extends RapperEvent {
   final _rapperName;
   final _rapperDesc;
@@ -36,7 +26,7 @@ class SelectRapper extends RapperEvent {
 
 class RapperState extends Equatable {
   @override
-  List<Artist> get props => [];
+  List<Rapper> get props => [];
 }
 
 // Display Error page - Error state (when API returns error)
@@ -51,11 +41,11 @@ class RapperIsLoaded extends RapperState {
   final _images;
   RapperIsLoaded(this._rappers, this._images);
 
-  List<Artist>? get getRappers => _rappers;
-  List<String>? get getImages => _images;
+  List<Rapper> get getRappers => _rappers;
+  List<String> get getImages => _images;
 
   @override
-  List<Artist> get props => [_rappers];
+  List<Rapper> get props => [_rappers];
 }
 
 // Display DescView page - 3rd state (when user clicks on a rapper)
@@ -69,7 +59,7 @@ class RapperIsSelected extends RapperState {
 
   @override
   // Error: type 'List<String>' is not a subtype of 'Artist'
-  List<Artist> get props => [_rapperName, _rapperDesc];
+  List<Rapper> get props => [_rapperName, _rapperDesc];
 }
 
 class RapperBloc extends Bloc<RapperEvent, RapperState> {
@@ -96,7 +86,7 @@ class RapperBloc extends Bloc<RapperEvent, RapperState> {
             listOfImgStrings.add(file.path);
         });
         // TODO: Not sure how to avoid this
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(Duration(seconds: 1));
         listOfImgStrings.sort();
         print(listOfImgStrings);
         yield RapperIsLoaded(_rappers, listOfImgStrings);
@@ -105,11 +95,6 @@ class RapperBloc extends Bloc<RapperEvent, RapperState> {
       }
     } else if (event is SelectRapper) {
       yield RapperIsSelected(event._rapperName, event._rapperDesc);
-    } else if (event is ResetRappers) {
-      yield RapperIsLoaded(event.getRappers, event.getImages);
     }
-    // else if (event is ResetRappers) {
-    //   yield rapperIsLoaded(rappers);
-    // }
   }
 }
